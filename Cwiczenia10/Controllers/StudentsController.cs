@@ -66,5 +66,24 @@ namespace Cwiczenia10.Controllers
             return Ok(response);
            
         }
+
+        [HttpPost("enroll")]
+        public IActionResult EnrollStudent(EnrollStudentRequest request)
+        {
+            EnrollStudentResponse response;
+            try
+            {
+                response = _dbService.EnrollStudent(request);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Created("Dodano studenta", response);
+        }
     }
 }

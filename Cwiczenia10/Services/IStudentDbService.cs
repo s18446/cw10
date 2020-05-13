@@ -14,5 +14,7 @@ namespace Cwiczenia10.Services
         public ModifyStudentResponse ModifyStudent(ModifyStudentRequest request);
 
         public RemoveStudentResponse RemoveStudent(RemoveStudentRequest request);
+
+        public EnrollStudentResponse EnrollStudent(EnrollStudentRequest request);
     }
 }

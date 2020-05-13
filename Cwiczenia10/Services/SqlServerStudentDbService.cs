@@ -16,6 +16,61 @@ namespace Cwiczenia10.Services
         {
             _dbContext = dbContext;
         }
+
+        public EnrollStudentResponse EnrollStudent(EnrollStudentRequest request)
+        {
+            EnrollStudentResponse response = new EnrollStudentResponse();
+
+
+
+            var studies = _dbContext.Studies
+                                    .Where(s => s.Name.Equals(request.Studies))
+                                    .Single();
+
+            var enrollment = _dbContext.Enrollment
+                                        .Where(e => e.IdStudy == studies.IdStudy && e.Semester == 1)
+                                        .SingleOrDefault();
+
+            int idEnrollment;
+            if (enrollment == null)
+            {
+                idEnrollment = _dbContext.Enrollment.Count();
+                var e = new Enrollment
+                {
+                    IdEnrollment = idEnrollment,
+                    Semester = 1,
+                    IdStudy = studies.IdStudy,
+                    StartDate = DateTime.Now
+                };
+
+                _dbContext.Enrollment.Add(e);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                idEnrollment = enrollment.IdEnrollment;
+            }
+
+            var student = new Student
+            {
+                IndexNumber = request.IndexNumber,
+                IdEnrollment = idEnrollment,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                BirthDate = request.birthDate             
+            };
+            _dbContext.Student.Add(student);
+            _dbContext.SaveChanges();
+            response = new EnrollStudentResponse
+            {
+                LastName = student.LastName,
+                Semester = enrollment.Semester,
+                StartDate = enrollment.StartDate
+            };
+            return response;
+        }
+
+
         public List<Student> GetStudents()
         {
             return _dbContext.Student.ToList();         
