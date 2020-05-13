@@ -1,4 +1,6 @@
-﻿using Cwiczenia10.Services;
+﻿using Cwiczenia10.DTOs.Requests;
+using Cwiczenia10.DTOs.Responses;
+using Cwiczenia10.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,40 @@ namespace Cwiczenia10.Controllers
                 return BadRequest(ex);
             }
             return Ok(response);
+        }
+
+        [HttpPost("modify")]
+        public IActionResult ModifyStudent(ModifyStudentRequest request)
+        {
+            ModifyStudentResponse response;
+
+            try
+            {
+                
+                response = _dbService.ModifyStudent(request);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Something went wrong");
+            }
+            return Ok(response);
+        }
+
+        [HttpPost("remove")]
+        public IActionResult RemoveStudent(RemoveStudentRequest request)
+        {
+            RemoveStudentResponse response;
+            try
+            {
+                response = _dbService.RemoveStudent(request);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Something went wrong");
+            }
+
+            return Ok(response);
+           
         }
     }
 }

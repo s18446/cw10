@@ -26,9 +26,11 @@ namespace Cwiczenia10
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
 
-            services.AddScoped<IStudentDbService, SqlServerStudentDbService>();
+            services.AddTransient<IStudentDbService, SqlServerStudentDbService>();
             services.AddDbContext<s18446Context>(options =>
             {
                 options.UseSqlServer("Data Source=db-mssql;Initial Catalog=s18446;Integrated Security=True");
