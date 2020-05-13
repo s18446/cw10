@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cwiczenia10
 {
@@ -13,7 +14,11 @@ namespace Cwiczenia10
     {
         public static void Main(string[] args)
         {
+           
             CreateHostBuilder(args).Build().Run();
+            
+   
+            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
