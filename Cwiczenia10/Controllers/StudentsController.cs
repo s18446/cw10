@@ -85,5 +85,20 @@ namespace Cwiczenia10.Controllers
             }
             return Created("Dodano studenta", response);
         }
+
+        [HttpPost("promote")]
+        public IActionResult PromoteStudent(PromoteStudentRequest request)
+        {
+            PromoteStudentResponse response;
+            try
+            {
+                response = _dbService.PromoteStudents(request);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Created("Nadano promocje", response);
+        }
     }
 }

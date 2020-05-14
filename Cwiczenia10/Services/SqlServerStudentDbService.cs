@@ -118,6 +118,76 @@ namespace Cwiczenia10.Services
               };     
         }
 
+        public PromoteStudentResponse PromoteStudents(PromoteStudentRequest request)
+        {
+            PromoteStudentResponse response = new PromoteStudentResponse();
+            List<Student> students = new List<Student>();
+
+           
+            Studies studies = _dbContext.Studies.Where(s => s.Name == request.Studies).Single();
+            int? idStudies = studies.IdStudy;
+
+            if(idStudies == null)
+            {
+                 throw new Exception("Brak studiow w bazie.");
+            }
+
+
+            Enrollment enrollment = _dbContext.Enrollment.Where(s => s.Semester == request.Semester && s.IdStudy == idStudies).Single();
+            int? IdEnrollment = enrollment.IdEnrollment;
+
+            if(IdEnrollment == null)
+            {
+                throw new Exception("Brak takiego wpisu.");
+            }
+
+            Enrollment newEnrollment = _dbContext.Enrollment.Where(s => s.Semester == (request.Semester + 1) && s.IdStudy == idStudies).Single();
+            int? newIdEnrollment = newEnrollment.IdEnrollment;
+
+            if(newIdEnrollment == null)
+            {
+                newEnrollment = new Enrollment
+                {
+                    Semester = (enrollment.Semester + 1),
+                    IdEnrollment = _dbContext.Enrollment.Count() + 1,
+                    IdStudy = (int)idStudies,
+                    StartDate = DateTime.Now
+                };
+
+                _dbContext.Enrollment.Add(newEnrollment);
+                _dbContext.SaveChanges();
+                newIdEnrollment = newEnrollment.IdEnrollment;
+            }
+
+
+            students = _dbContext.Student.Where(s => s.IdEnrollment == IdEnrollment).ToList();
+
+            foreach (Student s in students)
+            {
+                s.IdEnrollment = (int)newIdEnrollment;               
+                var us = new Student
+                {
+                    IndexNumber = s.IndexNumber,
+                    FirstName = s.FirstName,
+                    LastName = s.LastName,
+                    BirthDate = s.BirthDate,
+                    IdEnrollment = s.IdEnrollment,
+
+                };
+                _dbContext.Attach(us);
+                _dbContext.SaveChanges();
+            }
+
+
+            return new PromoteStudentResponse
+            {
+                IdEnrollment = newEnrollment.IdEnrollment,
+                IdStudy = newEnrollment.IdStudy,
+                Semester = newEnrollment.Semester,
+                StartDate = newEnrollment.StartDate
+            };
+        }
+
         public RemoveStudentResponse RemoveStudent(RemoveStudentRequest request)
         {
             RemoveStudentResponse response;
